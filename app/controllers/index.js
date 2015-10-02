@@ -49,6 +49,18 @@ export default Ember.Controller.extend({
     })
   }.on('init'),
 
+  getDesc: function(token) {
+    var self = this;
+    return ajax.request('http://localhost:4567/food-description?token=' + token).then(function(response) {
+      response = JSON.parse(response);
+      if (response.status !== 'completed') {
+        return self.getDesc(token);
+      } else {
+        return response.name;
+      }
+    });
+  },
+
   actions: {
     imageUrlUpload: function(image) {
       var clientId = '12de8c2e151296b';
@@ -74,21 +86,10 @@ export default Ember.Controller.extend({
       var controller = this;
       return ajax.request('http://localhost:4567/food-from-image?url=' + encodeURIComponent(image)).then(function(res) {
         var token = res.token;
-        var req = function()  {
-          return ajax.request('http://localhost:4567/food-description?token=' + token);
-        }
-
-        req().then(function(response){
-          response = JSON.parse(response);
-          if (response.status !== 'completed') {
-            return req().then(function() {
-
-            });
-          } else {
-            controller.set('name', response.name);
-            controller.transitoToRoute('recipes');
-          }
-        })
+        return controller.getDesc(token).then(function(name) {
+          controller.set('name', name);
+          controller.transitionToRoute('recipes', name);
+        });
       })
     },
   //   requestTagToCloud: function(image) {
