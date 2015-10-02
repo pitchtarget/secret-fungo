@@ -38,7 +38,7 @@ export default Ember.Controller.extend({
       document.getElementById("snap").addEventListener("click", function() {
         var canvas = document.getElementById("canvas"),
         context = canvas.getContext("2d");
-        context.drawImage(video, 0, 0, 640, 480);
+        context.drawImage(video, 0, 0, 300, 300);
         var imagetoDisplay = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
         var imageUrl = canvas.toDataURL().replace('data:image/png;base64', '');
         controller.get('images').pushObject(imageUrl);
@@ -77,19 +77,18 @@ export default Ember.Controller.extend({
         var req = function()  {
           return ajax.request('http://localhost:4567/food-description?token=' + token);
         }
-        setTimeout(
-          req().then(function(response){
-            response = JSON.parse(response);
-            if (response.status !== 'completed') {
-              return req().then(function() {
 
-              });
-            } else {
-              controller.set('name', response.name);
-              controller.transitoToRoute('recipes');
-            }
-          })
-          , 5000);
+        req().then(function(response){
+          response = JSON.parse(response);
+          if (response.status !== 'completed') {
+            return req().then(function() {
+
+            });
+          } else {
+            controller.set('name', response.name);
+            controller.transitoToRoute('recipes');
+          }
+        })
       })
     },
   //   requestTagToCloud: function(image) {
