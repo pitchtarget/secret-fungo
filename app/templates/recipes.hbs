@@ -1,0 +1,12 @@
+<div class="row">
+  {{#each recipe in model}}
+    <div class="col-sm-6">
+      <div class="card">
+        <img class="card-img-top" src="{{recipe.image}}" alt="Card image cap">
+        <div class="card-block">
+          <p class="card-text">{{recipe.label}}</p>
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>
